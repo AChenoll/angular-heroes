@@ -1,5 +1,5 @@
 <h1>
-  {{titulo}}
+  {{ currentHero.id ? 'Editar' : 'Crear' }} heroe {{currentHero.superhero}}
 </h1>
 
 <mat-divider class="mb-2"></mat-divider>
@@ -58,13 +58,13 @@
             <mat-label>Imagen alternativa</mat-label>
             <input type="text"
               matInput
-              required
               formControlName="alt_img">
           </mat-form-field>
 
           <div class="flex justify-content-between col-12">
-            <button mat-flat-button color="warn">Borrar</button>
-            <button mat-flat-button color="primary" [disabled]="heroForm.invalid">Guardar</button>
+            <button type="button" *ngIf="currentHero.id" mat-flat-button color="warn" (click)="onDeleteHero()">Borrar</button>
+            <span class="spacer"></span>
+            <button type="submit" mat-flat-button color="primary" [disabled]="heroForm.invalid">Guardar</button>
           </div>
 
         </form>

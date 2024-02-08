@@ -1,9 +1,14 @@
 import { Component } from '@angular/core';
-import { Hero, Publisher } from '../../interfaces/hero.interface';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormControl, FormGroup } from '@angular/forms';
-import { HeroesService } from '../../services/heroes.service';
 import { ActivatedRoute, Router } from '@angular/router';
+
 import { switchMap } from 'rxjs';
+
+import { Hero, Publisher } from '../../interfaces/hero.interface';
+import { HeroesService } from '../../services/heroes.service';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-new-page',
@@ -32,7 +37,9 @@ export class NewPageComponent {
   constructor(
     private heroesService: HeroesService,
     private activatedRoute: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private snackbar: MatSnackBar,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -52,8 +59,6 @@ export class NewPageComponent {
     })
   }
 
-
-
   get currentHero():Hero{
     const hero= this.heroForm.value as Hero;
     return hero;
@@ -61,23 +66,40 @@ export class NewPageComponent {
 
   onSubmit():void{
     if (this.heroForm.invalid) return;
-
     if(this.currentHero.id){
       this.heroesService.updateHero(this.currentHero)
       .subscribe(hero=>{
-        //TODO: Mostrar snackbar
+        this.showSnackbar(`Heroe ${hero.superhero} actualizado`);
       })
+      return
     }
 
     this.heroesService.addHero(this.currentHero)
     .subscribe(hero=>{
-      //TODO: Mostrar snackbar y navegar a /heroes/edit/hero.id
+      this.showSnackbar(`Heroe ${hero.superhero} creado`);
+    })
+  }
+
+  private showSnackbar(message:string): void{
+    this.snackbar.open(message, 'OK', {
+      duration:3000
+    })
+  }
+
+  public onDeleteHero(){
+    if(!this.currentHero.id) throw Error('Hero id is required')
+
+    const dialogRef= this.dialog.open(ConfirmDialogComponent, {
+      data: this.heroForm.value,
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (!result) return;
+      console.log('Deleted');
+      this.heroesService.deleteHeroById(this.currentHero.id);
+      this.router.navigate(['heroes/list'])
     })
 
-    // console.log({
-    //   formIsValid: this.heroForm.valid,
-    //   value: this.heroForm.value
-    // });
 
   }
 }

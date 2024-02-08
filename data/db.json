@@ -10,10 +10,11 @@
     {
       "id": "dc-batman",
       "superhero": "Batman",
-      "publisher": "DC Comics",
+      "publisher": "DC comics",
       "alter_ego": "Bruce Wayne",
       "first_appearance": "Detective Comics #27",
-      "characters": "Bruce Wayne"
+      "characters": "Bruce Wayne",
+      "alt_img": null
     },
     {
       "id": "dc-superman",
@@ -61,7 +62,8 @@
       "publisher": "DC Comics",
       "alter_ego": "J\"onn J\"onzz",
       "first_appearance": "Detective Comics #225",
-      "characters": "Martian Manhunter"
+      "characters": "Martian Manhunter",
+      "alt_img": null
     },
     {
       "id": "dc-robin",
