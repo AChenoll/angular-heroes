@@ -1,5 +1,5 @@
 import { ActivatedRouteSnapshot, CanActivateFn, CanMatchFn, Route, Router, RouterStateSnapshot, UrlSegment } from "@angular/router";
-import { Observable, tap } from "rxjs";
+import { Observable, map, tap } from "rxjs";
 import { AuthService } from "../services/auth.service";
 import { inject } from "@angular/core";
 
@@ -11,14 +11,16 @@ const checkAuthStatus=(): Observable<boolean>=>{
     .pipe(
       tap( isAuthenticated => console.log('Authenticated: ', isAuthenticated)),
       tap( isAuthenticated =>{
-        if(!isAuthenticated){
-          router.navigate(['/auth/login'])
+        if(isAuthenticated){ // Cambio la condicion para que compuebe si ya está logeado
+          router.navigate(['/heroes'])
+          console.log('El usuario ya esta logeado, redireccionando...'); // console.log para comprobar que el guard funciona
         }
-      } )
+      } ),
+      map(isAuthenticated => !isAuthenticated)
     )
 }
 
-export const canActivateGuard: CanActivateFn = (
+export const canActivateGuardLogged: CanActivateFn = (
   route: ActivatedRouteSnapshot,
   state: RouterStateSnapshot
 ) => {
@@ -28,7 +30,7 @@ export const canActivateGuard: CanActivateFn = (
   return checkAuthStatus();
 }
 
-export const canMatchGuard: CanMatchFn  = (
+export const canMatchGuardLogged: CanMatchFn  = (
   route: Route,
   segments: UrlSegment[]
 ) => {

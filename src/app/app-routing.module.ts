@@ -1,11 +1,14 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { canActivateGuard, canMatchGuard } from './auth/guards/auth.guard';
+import { canActivateGuardLogged, canMatchGuardLogged } from './auth/guards/public.guard';
 
 const routes: Routes = [
   {
     path: 'auth',
-    loadChildren: () => import('./auth/auth.module').then(m=>m.AuthModule)
+    loadChildren: () => import('./auth/auth.module').then(m=>m.AuthModule),
+    canMatch: [canMatchGuardLogged], // Al acceder a la pagina de autentificacion compruebao si el usuario ya esta logeado
+    canActivate: [canActivateGuardLogged]
   },
   {
     path: 'heroes',
